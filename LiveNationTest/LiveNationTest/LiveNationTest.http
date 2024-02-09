@@ -1,0 +1,6 @@
+@LiveNationTest_HostAddress = http://localhost:5061
+
+GET {{LiveNationTest_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
