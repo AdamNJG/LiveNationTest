@@ -18,7 +18,7 @@ namespace NumberConverter.Converting
 
         public ConverterResult Parse(int start, int end)
         {
-            Converter parser = new Converter(_ruleStore.GetRules()
+            Converter parser = new (_ruleStore.GetRules()
                 .Select(r => new ConverterRule(r.RuleOperator, r.Operand, r.ExpectedResult, r.ResultString)).ToList());
             return parser.Parse(start, end);
         }

@@ -3,6 +3,7 @@ using System.Reflection.Metadata.Ecma335;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace NumberConverter.Converting
 {
@@ -24,54 +25,39 @@ namespace NumberConverter.Converting
                 return new ConverterResult("Integers may not be negative", new Dictionary<string, int> { { "Error", 1 } });
             }
 
-            Dictionary<string, int> counts = new Dictionary<string, int>();
-            List<int> range = Enumerable.Range(start, end).ToList();
-            StringBuilder builder = new StringBuilder();
+            ConversionContext context = new ();
 
-            range.ForEach(number =>
+            foreach (int number in Enumerable.Range(start, end).ToList())
             {
-                List<ConverterRule> applicableRules = _rules.Where(r => r.Check(number))
-                    .ToList();
-
-                if (applicableRules.Count == 0)
-                {
-                    builder.Append(number).Append(" ");
-                    counts = AddToCount(counts, "Integer");
-                    return;
-                }
-
-                StringBuilder resultBuilder = new ();
-
-                applicableRules
-                    .ForEach(r =>
-                    {
-                        resultBuilder.Append(r.GenerateString());
-                    });
-
-                counts = AddToCount(counts, resultBuilder.ToString());
-                builder.Append(resultBuilder.ToString()).Append(" ");
-            });
-
-            if (builder.Length > 0)
-            {
-                builder.Length--;
+                context = ProcessNumber(context, number);
             }
 
-            return new ConverterResult(builder.ToString(), counts);
+            return new ConverterResult(context.Builder.ToString().TrimEnd(), context.Count);
         }
 
-        private Dictionary<string, int> AddToCount(Dictionary<string, int> count, string ruleString)
+        private ConversionContext ProcessNumber(ConversionContext context, int number)
         {
-            if (count.TryGetValue(ruleString, out int currentValue))
+            List<ConverterRule> applicableRules = _rules.Where(r => r.Check(number))
+                .ToList();
+
+            if (applicableRules.Count == 0)
             {
-                count[ruleString] = ++currentValue;
-            }
-            else
-            {
-                count[ruleString] = 1;
+                context.Builder.Append(number).Append(" ");
+                context.AddToCount("Integer");
+                return context;
             }
 
-            return count;
+            StringBuilder resultBuilder = new();
+
+            applicableRules
+                .ForEach(r =>
+                {
+                    resultBuilder.Append(r.GenerateString());
+                });
+
+            context.AddToCount(resultBuilder.ToString());
+            context.Builder.Append(resultBuilder.ToString()).Append(" ");
+            return context;
         }
 
         private bool InputsNegative(int start, int finish)
