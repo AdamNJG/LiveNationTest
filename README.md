@@ -1,4 +1,4 @@
-I have got to a point that everything is working and I have used TDD for the Majority of this, with some test cases needing fleshing out, purely because I figured that having addition and subtraction as rules could be cool.
+I have got to a point that everything is working and I have used TDD for the Majority of this, with some test cases needing fleshing out, purely because I feel like there would be some questions to be asked around the expected behavior.
 
 I feel like there is more work to be done on the Converter class, especially concerning cohesion and the Parse method, feeling a bit friends of friendsy.
 
