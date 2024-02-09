@@ -26,7 +26,6 @@ namespace NumberConverter.Converting
             }
 
             ConversionContext context = new ();
-
             foreach (int number in Enumerable.Range(start, end).ToList())
             {
                 context = ProcessNumber(context, number);
@@ -56,7 +55,7 @@ namespace NumberConverter.Converting
                 });
 
             context.AddToCount(resultBuilder.ToString());
-            context.Builder.Append(resultBuilder.ToString()).Append(" ");
+            context.Builder.Append(resultBuilder).Append(" ");
             return context;
         }
 
